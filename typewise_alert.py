@@ -28,9 +28,11 @@ def check_and_alert(alertTarget, batteryChar, temperatureInC):
     alertMessage="Not applicable"
   return alertMessage
 
+
 def send_to_controller(breachType):
   header = 0xfeed
   return(f'{header}, {breachType}')
+
 
 def send_to_email(breachType):
   recepient = "a.b@c.com"

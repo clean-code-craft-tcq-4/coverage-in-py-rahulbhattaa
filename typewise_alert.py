@@ -1,4 +1,4 @@
-
+batteryChar=dict({'PASSIVE_COOLING':tuple([0,35]), 'HI_ACTIVE_COOLING':tuple([0,45]),'MED_ACTIVE_COOLING':tuple([0,40])})
 def infer_breach(value, lowerLimit, upperLimit):
   if value < lowerLimit:
     return 'TOO_LOW'
@@ -8,36 +8,28 @@ def infer_breach(value, lowerLimit, upperLimit):
 
 
 def classify_temperature_breach(coolingType, temperatureInC):
-  lowerLimit=0
-    coolingType_dict={"PASSIVE":35,"HI_ACTIVE":45,"MED_ACTIVE":40}    #Cooling Type classification
-    for cool_type in coolingType_dict.keys():
-        if cool_type==coolingType:
-            upperLimit=coolingType_dict[cool_type]
-    breachType=infer_breach(value,lowerLimit,upperLimit)
-    return breachType
-
+  lowerLimit = batteryChar[coolingType][0]
+  upperLimit = batteryChar[coolingType][1]
+  return infer_breach(temperatureInC, lowerLimit, upperLimit)
 
 def check_and_alert(alertTarget, batteryChar, temperatureInC):
-  breachType=classify_temperature_breach(value,coolingType)
+  breachType =\
+    classify_temperature_breach(coolingType, temperatureInC)
   if alertTarget == 'TO_CONTROLLER':
-    message=send_to_controller(breachType)
+    send_to_controller(breachType)
   elif alertTarget == 'TO_EMAIL':
-    message=send_to_email(breachType)
-  return message
-
+    send_to_email(breachType)
 
 def send_to_controller(breachType):
   header = 0xfeed
-  controller_message='{header}, {breach}'.format(header = header,breach=breachType)
-  print(controller_message)
-  return controller_message
+  print(f'{header}, {breachType}')
 
 
 def send_to_email(breachType):
   recepient = "a.b@c.com"
   if breachType == 'TOO_LOW':
-      email_message=f'To: {recepient},Hi, the temperature is too low'.format(recepient=recepient)
+    print(f'To: {recepient}')
+    print('Hi, the temperature is too low')
   elif breachType == 'TOO_HIGH':
-      email_message=f'To: {recepient},Hi, the temperature is too high'.format(recepient=recepient)
-  print(email_message)
-  return email_message
+    print(f'To: {recepient}')
+    print('Hi, the temperature is too high')
